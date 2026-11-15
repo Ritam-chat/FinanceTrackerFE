@@ -8,7 +8,7 @@ import { ConfiguredBank, AppContext } from '../../context/AppContext';
 import { saveManualRecord, addRecord } from '../../api/client';
 
 interface Props {
-  sheetRef: React.RefObject<BottomSheet>;
+  sheetRef: React.RefObject<BottomSheet | null>;
   configuredBanks: ConfiguredBank[];
   onSuccess: () => void;
 }
@@ -134,7 +134,7 @@ export const ManualEntrySheet = ({ sheetRef, configuredBanks, onSuccess }: Props
       snapPoints={['85%']}
       enablePanDownToClose
       backdropComponent={(props) => (
-        <BottomSheetBackdrop {...props} disappearsAt={-1} appearsAt={0} opacity={0.5} />
+        <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.5} />
       )}
       backgroundStyle={{ backgroundColor: colors.background }}
       handleIndicatorStyle={{ backgroundColor: colors.border }}
@@ -267,7 +267,7 @@ export const ManualEntrySheet = ({ sheetRef, configuredBanks, onSuccess }: Props
                 <View style={{ flex: 1 }}>
                     <Text style={[styles.label, { color: colors.textSecondary }]}>Date & Time</Text>
                     <TouchableOpacity 
-                        style={[styles.input, { color: colors.text, borderColor: colors.border, justifyContent: 'center' }]}
+                        style={[styles.input, { borderColor: colors.border, justifyContent: 'center' }]}
                         onPress={() => setShowDatePicker(true)}
                     >
                         <Text style={{ color: colors.text }}>{date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>

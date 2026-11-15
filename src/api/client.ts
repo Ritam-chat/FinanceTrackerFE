@@ -2,7 +2,8 @@ import { FlatTransaction, flattenTransactions } from '../utils/flatten';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-const isLocal = process.env.EXPO_PUBLIC_RUN_LOCAL === 'true' || process.env.EXPO_PUBLIC_RUN_LOCAL === 'True';
+const rawRunLocal = (process.env.EXPO_PUBLIC_RUN_LOCAL || '').trim().toLowerCase();
+const isLocal = rawRunLocal === 'true';
 
 let localIp = '127.0.0.1';
 if (Constants.expoConfig?.hostUri) {
@@ -11,8 +12,9 @@ if (Constants.expoConfig?.hostUri) {
   localIp = '10.0.2.2';
 }
 
+const localPort = process.env.EXPO_PUBLIC_LOCAL_PORT || '5001';
 const BASE_URL = isLocal
-  ? `http://${localIp}:5000`
+  ? `http://${localIp}:${localPort}`
   : 'https://finance---api.vercel.app';
 
 let _user = 'Ritam';
@@ -33,9 +35,9 @@ export const wakeUp = async (): Promise<boolean> => {
   }
 };
 
-export const addRecord = async (data: { 
-  address: string; 
-  body: string; 
+export const addRecord = async (data: {
+  address: string;
+  body: string;
   readable_date: string;
   tags?: string[];
   gps?: string;
@@ -62,7 +64,10 @@ export const fetchRecords = async (since?: number): Promise<FlatTransaction[]> =
       method: 'GET',
       headers: getHeaders(),
     });
-    if (!res.ok) throw new Error('Network response was not ok');
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} (${res.statusText}) from ${url}: ${errText.slice(0, 150)}`);
+    }
     const data = await res.json();
     return flattenTransactions(data);
   } catch (error) {

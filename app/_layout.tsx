@@ -1,10 +1,16 @@
 import React from 'react';
+import { LogBox } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppProvider, AppContext } from '../src/context/AppContext';
 import { useTheme } from '../src/hooks/useTheme';
 import { useContext, useEffect } from 'react';
+
+LogBox.ignoreLogs([
+  '[Reanimated] Dependencies should only be used on the web',
+  'Dependencies should only be used on the web and are always ignored on native.',
+]);
 
 export const unstable_settings = {
   anchor: '(tabs)',

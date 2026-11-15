@@ -107,14 +107,14 @@ export const FilterBar = () => {
             
             <Text style={[styles.label, { color: colors.textSecondary }]}>Start Date</Text>
             <TouchableOpacity 
-              style={[styles.input, { color: colors.text, borderColor: colors.border, justifyContent: 'center' }]}
+              style={[styles.input, { borderColor: colors.border, justifyContent: 'center' }]}
               onPress={() => setStartPickerVisible(true)}>
               <Text style={{ color: colors.text }}>{tempStartDate.toLocaleDateString()}</Text>
             </TouchableOpacity>
 
             <Text style={[styles.label, { color: colors.textSecondary, marginTop: 12 }]}>End Date</Text>
             <TouchableOpacity 
-              style={[styles.input, { color: colors.text, borderColor: colors.border, justifyContent: 'center' }]}
+              style={[styles.input, { borderColor: colors.border, justifyContent: 'center' }]}
               onPress={() => setEndPickerVisible(true)}>
               <Text style={{ color: colors.text }}>{tempEndDate.toLocaleDateString()}</Text>
             </TouchableOpacity>

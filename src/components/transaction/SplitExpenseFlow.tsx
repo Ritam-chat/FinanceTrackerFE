@@ -9,7 +9,7 @@ import { formatAmount } from '../../utils/formatters';
 interface SplitExpenseFlowProps {
   transaction: FlatTransaction;
   onClose: () => void;
-  bottomSheetRef: React.RefObject<BottomSheet>;
+  bottomSheetRef: React.RefObject<BottomSheet | null>;
 }
 
 export const SplitExpenseFlow: React.FC<SplitExpenseFlowProps> = ({ transaction, onClose, bottomSheetRef }) => {

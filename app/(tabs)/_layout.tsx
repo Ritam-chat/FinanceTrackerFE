@@ -21,35 +21,35 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="view-dashboard" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="view-dashboard" color={color as string} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="chart-pie" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="chart-pie" color={color as string} />,
         }}
       />
       <Tabs.Screen
         name="to-receive"
         options={{
           title: 'To Receive',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="cash-fast" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="cash-fast" color={color as string} />,
         }}
       />
       <Tabs.Screen
         name="accounts"
         options={{
           title: 'Accounts',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="bank" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="bank" color={color as string} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="magnify" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons size={28} name="magnify" color={color as string} />,
         }}
       />
     </Tabs>

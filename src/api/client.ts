@@ -57,12 +57,15 @@ export const addRecord = async (data: {
 };
 
 export const fetchRecords = async (since?: number): Promise<FlatTransaction[]> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
   try {
     let url = `${BASE_URL}/records?uname=ritariya&key=210102`;
     if (since) url += `&since=${since}`;
     const res = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
+      signal: controller.signal,
     });
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
@@ -73,16 +76,25 @@ export const fetchRecords = async (since?: number): Promise<FlatTransaction[]> =
   } catch (error) {
     console.error('Error fetching records:', error);
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
 
 export const fetchSettings = async (): Promise<any> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`${BASE_URL}/settings`, { headers: getHeaders() });
+    const res = await fetch(`${BASE_URL}/settings`, { 
+      headers: getHeaders(),
+      signal: controller.signal,
+    });
     if (!res.ok) return {};
     return await res.json();
   } catch (e) {
     return {};
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
 

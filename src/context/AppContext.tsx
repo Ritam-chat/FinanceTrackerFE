@@ -194,6 +194,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err: any) {
       dispatch({ type: 'SET_ERROR', payload: err.message || 'Failed to fetch records' });
+    } finally {
       dispatch({ type: 'SET_SYNCING', payload: false });
     }
   };
@@ -384,33 +385,37 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       wakeUp();
       
       dispatch({ type: 'SET_SYNCING', payload: true });
-      const effectiveLastSync = lastSync || (Date.now() - (90 * 24 * 60 * 60 * 1000));
-      const promises: Promise<any>[] = [ fetchRecords(effectiveLastSync).catch(() => []) ];
-      if (needsSettingsFetch) {
-        promises.push(fetchSettings().catch(() => ({})));
-      }
+      try {
+        const effectiveLastSync = lastSync || (Date.now() - (90 * 24 * 60 * 60 * 1000));
+        const promises: Promise<any>[] = [ fetchRecords(effectiveLastSync).catch(() => []) ];
+        if (needsSettingsFetch) {
+          promises.push(fetchSettings().catch(() => ({})));
+        }
 
-      const [records, newSettings] = await Promise.all(promises);
-      
-      const newMerged = mergeAndSortRecords(storedRecords, records);
+        const [records, newSettings] = await Promise.all(promises);
+        
+        const newMerged = mergeAndSortRecords(storedRecords, records || []);
 
-      if (records.length > 0) {
-         dispatch({ type: 'SET_TRANSACTIONS', payload: newMerged });
-         
-         try {
-            await AsyncStorage.setItem('@records', JSON.stringify(newMerged));
-            await AsyncStorage.setItem('@records_last_sync', Date.now().toString());
-         } catch(e) {}
-      } else {
-          dispatch({ type: 'SET_SYNCING', payload: false });
-      }
-      
-      if (newSettings && Object.keys(newSettings).length > 0) {
-        dispatch({ type: 'SET_SETTINGS', payload: newSettings });
-        try {
-          await AsyncStorage.setItem('@settings', JSON.stringify(newSettings));
-          await AsyncStorage.setItem('@settings_last_sync', Date.now().toString());
-        } catch(e) {}
+        if (records && records.length > 0) {
+           dispatch({ type: 'SET_TRANSACTIONS', payload: newMerged });
+           
+           try {
+              await AsyncStorage.setItem('@records', JSON.stringify(newMerged));
+              await AsyncStorage.setItem('@records_last_sync', Date.now().toString());
+           } catch(e) {}
+        }
+        
+        if (newSettings && Object.keys(newSettings).length > 0) {
+          dispatch({ type: 'SET_SETTINGS', payload: newSettings });
+          try {
+            await AsyncStorage.setItem('@settings', JSON.stringify(newSettings));
+            await AsyncStorage.setItem('@settings_last_sync', Date.now().toString());
+          } catch(e) {}
+        }
+      } catch (e) {
+        console.error('Init error:', e);
+      } finally {
+        dispatch({ type: 'SET_SYNCING', payload: false });
       }
     };
     init();

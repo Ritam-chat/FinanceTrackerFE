@@ -12,6 +12,7 @@ export interface ConfiguredBank {
   accountType: 'Savings' | 'Credit Card';
   linkedCards?: Record<string, string>;
   statementDay?: number;
+  nickname?: string;
 }
 
 type FilterState = {

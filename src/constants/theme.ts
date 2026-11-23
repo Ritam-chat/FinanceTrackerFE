@@ -34,6 +34,13 @@ export const BANK_COLORS: Record<string, keyof typeof COLORS.dark> = {
   SBI: 'blue',
   ONE: 'amber',
   IDFC: 'amber',
+  KOTAK: 'red',
+  HSBC: 'red',
+  AXIS: 'purple',
+  ICICI: 'amber',
+  'YES BANK': 'blue',
+  AMEX: 'blue',
+  RBL: 'purple',
 };
 
 export const SPACING = {

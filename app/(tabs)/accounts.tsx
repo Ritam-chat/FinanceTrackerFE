@@ -14,6 +14,8 @@ export default function AccountsScreen() {
 
   const [isAdding, setIsAdding] = useState(false);
   const [bankName, setBankName] = useState('');
+  const [customBankName, setCustomBankName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [accountDigits, setAccountDigits] = useState('');
   const [accountType, setAccountType] = useState<'Savings' | 'Credit Card'>('Savings');
 
@@ -23,20 +25,24 @@ export default function AccountsScreen() {
   const [newCardNickname, setNewCardNickname] = useState('');
 
   const handleAddBank = async () => {
-    if (!bankName.trim()) {
+    const finalBank = bankName === 'Other' ? customBankName.trim() : bankName.trim();
+    if (!finalBank) {
       Alert.alert('Error', 'Bank name is required');
       return;
     }
     const newBank: ConfiguredBank = {
       id: Math.random().toString(36).substring(7),
-      bankName: bankName.trim(),
+      bankName: finalBank,
       accountDigits: accountDigits.trim(),
-      accountType
+      accountType,
+      nickname: nickname.trim() || undefined,
     };
     const success = await saveConfiguredBanks([...configuredBanks, newBank]);
     if (success) {
       setIsAdding(false);
       setBankName('');
+      setCustomBankName('');
+      setNickname('');
       setAccountDigits('');
       setAccountType('Savings');
     } else {
@@ -75,7 +81,7 @@ export default function AccountsScreen() {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View>
                 <Text style={{ color: colors.text, fontSize: 16, fontWeight: '700' }}>
-                   {bank.bankName} {bank.accountDigits ? `(••${bank.accountDigits})` : ''}
+                   {bank.bankName} {bank.nickname ? `• ${bank.nickname} ` : ''}{bank.accountDigits ? `(••${bank.accountDigits})` : ''}
                 </Text>
                 <Text style={{ color: colors.textSecondary }}>{bank.accountType}</Text>
               </View>
@@ -152,7 +158,7 @@ export default function AccountsScreen() {
           <View style={[styles.formContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
             <Text style={[styles.label, { color: colors.textSecondary }]}>Select Bank</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
-              {['HDFC', 'SBI', 'ONE', 'IDFC', 'AXIS', 'ICICI', 'KOTAK', 'PAYTM', 'YES BANK', 'KIWI', 'HSBC', 'BOI', 'CANARA', 'UNION'].map(b => (
+              {['HDFC', 'SBI', 'ONE', 'IDFC', 'AXIS', 'ICICI', 'KOTAK', 'HSBC', 'YES BANK', 'AMEX', 'RBL', 'PAYTM', 'KIWI', 'Other'].map(b => (
                 <TouchableOpacity 
                   key={b} 
                   style={[
@@ -166,6 +172,23 @@ export default function AccountsScreen() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+            {bankName === 'Other' && (
+              <TextInput
+                style={[styles.input, { color: colors.text, borderColor: colors.border }]}
+                placeholder="Enter Provider / Bank Name (e.g. AMEX)"
+                placeholderTextColor={colors.textSecondary}
+                value={customBankName}
+                onChangeText={setCustomBankName}
+                autoCapitalize="characters"
+              />
+            )}
+            <TextInput
+              style={[styles.input, { color: colors.text, borderColor: colors.border }]}
+              placeholder={accountType === 'Credit Card' ? "Card Nickname (e.g. 811, Live Plus, Millennia)" : "Account Nickname (Optional)"}
+              placeholderTextColor={colors.textSecondary}
+              value={nickname}
+              onChangeText={setNickname}
+            />
             <TextInput
               style={[styles.input, { color: colors.text, borderColor: colors.border }]}
               placeholder="Account Last Digits (Optional)"
@@ -213,6 +236,7 @@ export default function AccountsScreen() {
               key={cc.id} 
               bank={cc.bankName} 
               account={cc.accountDigits}
+              nickname={cc.nickname}
               transactions={transactions} 
               statementDay={cc.statementDay || 15}
               onSaveDay={(day) => updateConfiguredBank(cc.id, { statementDay: day })}

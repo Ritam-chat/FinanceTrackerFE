@@ -10,12 +10,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 interface CCStatementCardProps {
   bank: string;
   account: string;
+  nickname?: string;
   transactions: FlatTransaction[];
   statementDay: number;
   onSaveDay: (day: number) => void;
 }
 
-export const CCStatementCard: React.FC<CCStatementCardProps> = ({ bank, account, transactions, statementDay: initDay, onSaveDay }) => {
+export const CCStatementCard: React.FC<CCStatementCardProps> = ({ bank, account, nickname, transactions, statementDay: initDay, onSaveDay }) => {
   const { colors } = useTheme();
 
   const [statementDay, setStatementDay] = useState<number>(initDay);
@@ -57,7 +58,9 @@ export const CCStatementCard: React.FC<CCStatementCardProps> = ({ bank, account,
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MaterialCommunityIcons name="credit-card-chip-outline" size={24} color={colors.amber} style={{ marginRight: 8 }} />
-          <Text style={[styles.bankName, { color: colors.text }]}>{bank} (**** **** **** {account})</Text>
+          <Text style={[styles.bankName, { color: colors.text }]}>
+            {nickname ? `${bank} • ${nickname}` : bank} {account ? `(•••• ${account})` : ''}
+          </Text>
         </View>
       </View>
 

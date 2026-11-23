@@ -232,7 +232,7 @@ export const ManualEntrySheet = ({ sheetRef, configuredBanks, onSuccess }: Props
                                 onPress={() => setSelectedBankId(bank.id)}
                             >
                                 <Text style={{ color: selectedBankId === bank.id ? '#FFF' : colors.text, fontSize: 13 }}>
-                                    {bank.bankName} {bank.accountDigits ? `(••${bank.accountDigits})` : ''}
+                                    {bank.bankName} {bank.nickname ? `(${bank.nickname})` : ''} {bank.accountDigits ? `(••${bank.accountDigits})` : ''}
                                 </Text>
                             </TouchableOpacity>
                         ))}
